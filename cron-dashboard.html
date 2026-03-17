@@ -322,7 +322,8 @@
 (function() {
   'use strict';
   var TOKEN = new URLSearchParams(window.location.search).get('token') || '';
-  var JOBS_URL = '/__openclaw__/canvas/cron-data.json?token=' + encodeURIComponent(TOKEN);
+  var EMBEDDED = !!(window.__OPENCRON_DATA);
+  var JOBS_URL = EMBEDDED ? '' : '/__openclaw__/canvas/cron-data.json?token=' + encodeURIComponent(TOKEN);
   var currentData = null;
   var runHistory = {};
   var calMonth = new Date().getMonth();
@@ -605,6 +606,12 @@
 
   // Runs tab
   function fetchRunHistory(jobs) {
+    if (EMBEDDED && window.__OPENCRON_RUNS) {
+      runHistory = window.__OPENCRON_RUNS;
+      renderRuns();
+      renderCalendar();
+      return;
+    }
     var jobIds = (jobs || []).map(function(j){ return j.id; });
     var jobNames = {};
     (jobs || []).forEach(function(j){ jobNames[j.id] = j.name || j.id; });
@@ -760,9 +767,16 @@
     btn.textContent = 'Loading...';
     startBraille('refresh-spinner', BRAILLE_SPINNER, 80);
     try {
-      var res = await fetch(JOBS_URL);
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      var data = await res.json();
+      var data;
+      if (EMBEDDED && window.__OPENCRON_DATA) {
+        data = window.__OPENCRON_DATA;
+        // On refresh, reload the whole page to get fresh server-rendered data
+        if (currentData) { window.location.reload(); return; }
+      } else {
+        var res = await fetch(JOBS_URL);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        data = await res.json();
+      }
       currentData = data;
       renderJobs(data);
       fetchRunHistory(data.jobs || []);
@@ -779,7 +793,8 @@
   document.getElementById('refresh-btn').addEventListener('click', loadData);
 
   loadData();
-  setInterval(loadData, 30000);
+  if (!EMBEDDED) setInterval(loadData, 30000);
+  if (EMBEDDED) setInterval(function(){ window.location.reload(); }, 30000);
   setInterval(function(){ if(currentData&&currentData.jobs) updateJobTimers(currentData.jobs); }, 1000);
 })();
 </script>
