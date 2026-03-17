@@ -12,7 +12,7 @@ Copy this into your OpenClaw:
 Clone https://github.com/firstfloris/opencron-skill into skills/opencron.
 Run python3 skills/opencron/update_canvas.py to deploy the dashboard.
 Run nohup sh skills/opencron/watch_sync.sh & to start background sync.
-After every cron job run, detect the host IP and show the user: "See cron status on OpenCron: http://<host-ip>:8090/cron.html?token=<token>"
+After every cron job run, detect the dashboard URL and show the user: "See cron status on OpenCron: <dashboard-url>"
 ```
 
 Or via CLI:
