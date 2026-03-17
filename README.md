@@ -4,6 +4,23 @@ A single-file dashboard that turns your cron jobs into something you actually wa
 
 ![Dashboard overview](docs/overview.png)
 
+## Install
+
+Copy this into your OpenClaw:
+
+```
+Clone https://github.com/firstfloris/opencron-skill into skills/opencron.
+Run python3 skills/opencron/update_canvas.py to deploy the dashboard.
+Run nohup sh skills/opencron/watch_sync.sh & to start background sync.
+After every cron job run, show the user: "See cron status on OpenCron: <dashboard-url>"
+```
+
+Or via CLI:
+
+```bash
+npx clawhub add opencron
+```
+
 ## What you get
 
 **Live countdowns** that tick every second. Badge fills that show progress toward the next run. Braille unicode icons instead of bloated icon fonts. Smooth animations that serve as feedback, not decoration.
@@ -30,10 +47,6 @@ A single-file dashboard that turns your cron jobs into something you actually wa
 ## Try it
 
 Open [`demo.html`](demo.html) in any browser — fully working with mock data, no server needed.
-
-## Use with OpenClaw
-
-See [opencron-skill](https://github.com/firstfloris/opencron-skill) for one-command deployment.
 
 ## License
 
